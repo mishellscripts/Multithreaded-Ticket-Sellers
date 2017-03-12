@@ -8,6 +8,14 @@ public class Simulation {
 		int N = 10; //change to command line argument later?
 		
 		
+		//keep track of the hour
+		
+		
+		//lock
+		
+		
+		
+		
 		//create 10x10 seating and label with seat numbers
 		Seat[][] seating = new Seat[10][10]; 
 		int numSeat = 1;
@@ -33,17 +41,35 @@ public class Simulation {
 		
 		//add N customers for each seller for each hour
 		//initially add N customers for each seller's queue
-		
+		for (int numSeller = 0; numSeller < 10; numSeller++)
+		{
+			for (int count = 0; count < N; count++)
+			{
+				Customer c = new Customer(numSeller);
+				allSellers[numSeller].addCustomer(c);
+			}
+		}
 		
 		
 		//wake up all seller threads, so they can run in "parallel"
 		//use notifyAll for broadcast
+		for (int numSeller = 0; numSeller < allSellers.length; numSeller++)
+		{
+			allSellers[numSeller].run();
+		}
 		
 		
 		
+		//print the following with the current time
+		//- customer added to the queue
+		//- customer is attended (given a seat or told there are no seats)
+		//- customer gets a ticket and goes to seat
+		//- print seating chart everytime a ticket is sold
 		
-		//print the following
-		//-
+		
+		
+		//seller needs to take in parameters or have some ref to
+		//2D array, time?, universal lock
 	}
 	
 	

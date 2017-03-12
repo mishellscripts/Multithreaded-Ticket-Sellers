@@ -6,15 +6,30 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Seller implements Runnable {
 	Queue<Customer> customers;
+<<<<<<< HEAD
 	String type;
 	Lock lock;
 	Condition cond;
+=======
+	//String type;
+	Seat[][] seating;
+>>>>>>> stash
 
-	public Seller(String t) {
+	public Seller(Seat[][] s) {
 		customers = new LinkedList<Customer>();
+<<<<<<< HEAD
 		type = t;
 		lock = new ReentrantLock();
 		cond = lock.newCondition();
+=======
+		//type = t;
+		seating = s;
+	}
+	
+	public void addCustomer(Customer c)
+	{
+		customers.add(c);
+>>>>>>> stash
 	}
 
 	// seller thread to serve one time slice (1 minute)
