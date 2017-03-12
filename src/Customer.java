@@ -7,7 +7,7 @@ public class Customer {
 	private int customerID;
 	
 	public Customer(int customerID){
-		arrivalTime = r.nextInt();
+		arrivalTime = r.nextInt(59);
 		this.customerID = customerID;
 	}
 	
