@@ -1,4 +1,5 @@
-
 public class Simulation {
-	//test
+	public static void main(String[] args) {
+		
+	}
 }
