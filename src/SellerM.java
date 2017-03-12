@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class SellerM {
+public class SellerM extends Seller{
 	int serviceTime;
 	Random r = new Random();
 	
