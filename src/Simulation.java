@@ -1,5 +1,7 @@
 public class Simulation {
-	
+	public void wakeupSellers() {
+		
+	}
 	public static void main(String[] args) {
 		
 		//number of customers per seller per hour
