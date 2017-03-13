@@ -30,6 +30,7 @@ public class Simulation {
 		
 		
 		//add N customers for each seller for each hour
+  
 		//initially add N customers for each seller's queue
 		
 		

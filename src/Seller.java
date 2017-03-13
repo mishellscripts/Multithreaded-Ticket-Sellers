@@ -4,18 +4,24 @@ import java.util.Queue;
 public class Seller implements Runnable {
 	Queue<Customer> customers;
 	String type;
+	Seat[][] seats;
 
-	public Seller(String t) {
+	public Seller(String t, Seat[][] s) {
 		customers = new LinkedList<Customer>();
 		type = t;
+		seats=s;
 	}
 
 	public void sell() {
 		while (!customers.isEmpty()) {
-			
+			Object obj = new Object();
+			synchronized(obj){
+				
+				
+			}
 		}
 	}
 	public void run() {
-
+		
 	}
 }
