@@ -5,11 +5,9 @@ public class SellerH extends Seller {
 	Random r = new Random();
 	Seat[][] seating;
 
-	
-	public SellerH(String type, Seat[][] s) {
 	public SellerH(Seat[][] s) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
-		super(type,s);
+		super(s);
 		serviceTime = r.nextInt(2) + 1;
 	}
 	 

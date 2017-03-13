@@ -33,9 +33,9 @@ public class Simulation {
 		Seller[] allSellers = new Seller[10];
 		for (int numSeller = 0; numSeller < 10; numSeller++)
 		{
-			if (numSeller == 0) allSellers[numSeller] = new SellerH();
-			else if (numSeller >= 1 && numSeller < 4) allSellers[numSeller] = new SellerM();
-			else if (numSeller >= 4 && numSeller < 10) allSellers[numSeller] = new SellerL();
+			if (numSeller == 0) allSellers[numSeller] = new SellerH(seating);
+			else if (numSeller >= 1 && numSeller < 4) allSellers[numSeller] = new SellerM(seating);
+			else if (numSeller >= 4 && numSeller < 10) allSellers[numSeller] = new SellerL(seating);
 		}
 		
 		
