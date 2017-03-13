@@ -6,21 +6,31 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Seller implements Runnable {
 	Queue<Customer> customers;
+<<<<<<< HEAD
 	String type;
+<<<<<<< HEAD
 	Seat[][] seats;
 
 	public Seller(String t, Seat[][] s) {
+=======
 	Lock lock;
 	Condition cond;
+=======
 	//String type;
 	Seat[][] seating;
+>>>>>>> stash
 
 	public Seller(Seat[][] s) {
+>>>>>>> 59079509c16764ee815c38eff947cc8afb68a366
 		customers = new LinkedList<Customer>();
+<<<<<<< HEAD
 		type = t;
+<<<<<<< HEAD
 		seats=s;
+=======
 		lock = new ReentrantLock();
 		cond = lock.newCondition();
+=======
 		//type = t;
 		seating = s;
 	}
@@ -28,15 +38,19 @@ public class Seller implements Runnable {
 	public void addCustomer(Customer c)
 	{
 		customers.add(c);
+>>>>>>> stash
+>>>>>>> 59079509c16764ee815c38eff947cc8afb68a366
 	}
 
 	// seller thread to serve one time slice (1 minute)
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {
+<<<<<<< HEAD
 			Object obj = new Object();
 			synchronized(obj){
 				
 				
+=======
 			Object lock = new Object();
 			synchronized(lock) {
 				while (customers.isEmpty()) wait();
@@ -44,6 +58,7 @@ public class Seller implements Runnable {
 				Customer customer = customers.peek();
 				
 				notifyAll();
+>>>>>>> 59079509c16764ee815c38eff947cc8afb68a366
 			}
 		}
 
