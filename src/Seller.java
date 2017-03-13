@@ -2,15 +2,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Seller implements Runnable {
 	Queue<Customer> customers;
-
+	protected Random r = new Random();
 	//String type;
-	Seat[][] seating;
+	protected Seat[][] seating;
 
 	public Seller(Seat[][] s) {
 		customers = new LinkedList<Customer>();
