@@ -49,6 +49,7 @@ public class Simulation {
 				Customer c = new Customer(numSeller);
 				allSellers[numSeller].addCustomer(c);
 			}
+			allSellers[numSeller].sortQueue();
 		}
 		
 		
