@@ -40,6 +40,7 @@ public class Simulation {
 		
 		
 		//add N customers for each seller for each hour
+  
 		//initially add N customers for each seller's queue
 		for (int numSeller = 0; numSeller < 10; numSeller++)
 		{
