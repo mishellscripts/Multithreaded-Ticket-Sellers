@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class Customer {
+public class Customer implements Comparable<Customer>{
 	Random r = new Random();
 	private int arrivalTime;
 	private int seatNum;
@@ -25,5 +25,15 @@ public class Customer {
 	
 	public int customerID(){
 		return this.customerID;
+	}
+
+	@Override
+	public int compareTo(Customer customer) {
+		if(this.arrivalTime < customer.arrivalTime)
+			return -1;
+		else if(this.arrivalTime > customer.arrivalTime)
+			return 1;
+		else
+			return 0;
 	}
 }

@@ -14,4 +14,31 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/hw3/Seller.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/Seller.java</locationURI>
+		</link>
+		<link>
+			<name>src/hw3/SellerH.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/SellerH.java</locationURI>
+		</link>
+		<link>
+			<name>src/hw3/SellerL.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/SellerL.java</locationURI>
+		</link>
+		<link>
+			<name>src/hw3/SellerM.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/SellerM.java</locationURI>
+		</link>
+		<link>
+			<name>src/hw3/Simulation.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/Simulation.java</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
