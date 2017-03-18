@@ -52,7 +52,7 @@ public class SellerM extends Seller{
 				}
 			}
 			
-			if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
+			if (!found) System.out.println("M - Sorry, the concert is sold out!");
 
 			notifyAll();
 			customers.remove();

@@ -12,16 +12,17 @@ public class SellerL extends Seller{
 	
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {						
-			Object lock = new Object();
-			synchronized(lock) {
-				while (customers.isEmpty()) return;
-				// Get customer in queue that is ready
-				Customer customer = customers.peek();
+			//Object lock = new Object();
+			
+			while (customers.isEmpty()) return;
+			// Get customer in queue that is ready
+			Customer customer = customers.peek();
 
-				// Find seat for the customer
-				// Case for Seller L
-				boolean found = false;
-				
+			// Find seat for the customer
+			// Case for Seller L
+			boolean found = false;
+			
+			synchronized(lock) {
 				find_seat:
 				for (int i = seating.length-1; i < 0; i--) {
 					for (int j = 0; j < seating[0].length; j++) {
@@ -37,12 +38,12 @@ public class SellerL extends Seller{
 						}
 					}
 				}
-				
-				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
-
-				notifyAll();
-				customers.remove();
 			}
+			
+			if (!found) System.out.println("L - Sorry, the concert is sold out!");
+
+			notifyAll();
+			customers.remove();
 		}
 	}
 }
