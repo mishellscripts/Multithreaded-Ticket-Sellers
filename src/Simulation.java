@@ -1,16 +1,16 @@
 public class Simulation {
 	public void wakeupSellers() {
-		
+
 	}
 	public static void main(String[] args) {
 
 		//number of customers per seller per hour
 		int N = 10; //change to command line argument later?
-		
+
 		int maxRows = 10;
 		int maxCols = 10;
 		Seat[][] seating = createSeating(maxRows, maxCols);
-		
+
 		//create 10 threads representing 10 sellers
 		Seller[] allSellers = new Seller[10];
 		for (int numSeller = 0; numSeller < 10; numSeller++)
@@ -19,35 +19,56 @@ public class Simulation {
 			else if (numSeller >= 1 && numSeller < 4) allSellers[numSeller] = new SellerM(seating);
 			else if (numSeller >= 4 && numSeller < 10) allSellers[numSeller] = new SellerL(seating);
 		}
-		
+
 		//add N customers for each seller for each hour
 		//initially add N customers for each seller's queue
 		allSellers = addNewCustomers(allSellers, N);
+<<<<<<< HEAD
 		
 		
 		
 //		//wake up all seller threads, so they can run in "parallel"
-//		allSellers.notifyAll(); //use notifyAll for broadcast
-//		for(int numSellers = 0; numSellers < 10; numSellers++)
-//		{
-//			Thread currentThread = new Thread(allSellers[numSellers]);
-//			currentThread.start();
-//		}
+		allSellers.notifyAll(); //use notifyAll for broadcast
+		for(int numSellers = 0; numSellers < 10; numSellers++)
+		{
+			Thread currentThread = new Thread(allSellers[numSellers]);
+			currentThread.start();
+		}
 		
 		
+=======
+
+
+
+		//wake up all seller threads, so they can run in "parallel"
+		allSellers.notifyAll(); //use notifyAll for broadcast
+		for(int numSellers = 0; numSellers < 10; numSellers++)
+		{
+			Thread currentThread = new Thread(allSellers[numSellers]);
+			currentThread.start();
+		}
+
+
+>>>>>>> stash
 		//print the following with the current time
 		//- customer added to the queue
 		//- customer is attended (given a seat or told there are no seats)
 		//- customer gets a ticket and goes to seat
 		//- print seating chart everytime a ticket is sold
-		
-		
-		
-		
+		printSeating(seating, maxRows, maxCols);
+
+
+
 		//seller needs to take in parameters or have some ref to
 		//2D array, time?, universal lock
 	}
-	
+
+	/**
+	 * Create a seating chart and label with seat numbers
+	 * @param maxRows: max number of rows for the chart
+	 * @param maxCols max number of columns for the chart
+	 * @return seating chart with the given size and fully labeled
+	 */
 	public static Seat[][] createSeating(int maxRows, int maxCols)
 	{
 		//create 10x10 seating and label with seat numbers
@@ -63,7 +84,13 @@ public class Simulation {
 		}
 		return seating;
 	}
-	
+
+	/**
+	 * Add the given number of customers for each seller's queue
+	 * @param allSellers: array containing all the sellers
+	 * @param numAdd: number of customers to add to each seller
+	 * @return updated array with the new customers added to each queue
+	 */
 	public static Seller[] addNewCustomers(Seller[] allSellers, int numAdd)
 	{
 		for (int numSeller = 0; numSeller < allSellers.length; numSeller++)
@@ -73,21 +100,28 @@ public class Simulation {
 				Customer c = new Customer(numSeller);
 				allSellers[numSeller].addCustomer(c);
 			}
-			allSellers[numSeller].sortQueue();
+			//allSellers[numSeller].sortQueue();
 		}
 		return allSellers;
 	}
-	
+
+	/**
+	 * Print the current seating chart
+	 * @param seating: current seating chart
+	 * @param maxRows: max number of rows for the chart
+	 * @param maxCols: max number of columns for the chart
+	 */
 	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
 	{
 		for (int row = 0; row < maxRows; row++)
 		{
 			for (int col = 0; col < maxCols; col++)
 			{
-				//if (seating[row][col])
-				System.out.printf("%5d ", seating[row][col]);
+				if (seating[row][col].isSeatEmpty()) System.out.printf("%5s ", "--");
+				else System.out.printf("%5s ", "X");
 			}
+			System.out.println();
 		}
 	}
-	
+
 }
