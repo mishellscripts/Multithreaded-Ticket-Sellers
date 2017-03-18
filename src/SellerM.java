@@ -1,13 +1,17 @@
 import java.util.Random;
 
 public class SellerM extends Seller{
+<<<<<<< HEAD
+
+	
+=======
 	//Seat[][] seating;
 	private int serviceTime;
 
+>>>>>>> 00231be48498f770b6f7fe9ec6fb40e20c15dc17
 	public SellerM(Seat[][] s) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
-		super(s);
-		serviceTime = r.nextInt(4) + 2;
+		super(s, r.nextInt(4) + 2);
 	}
 
 	public void sell() throws InterruptedException {

@@ -9,6 +9,7 @@ public class Customer implements Comparable<Customer>{
 	public Customer(int customerID){
 		arrivalTime = r.nextInt(59);
 		this.customerID = customerID;
+		seatNum = -1;
 	}
 	
 	public int getArrivalTime(){
@@ -19,6 +20,10 @@ public class Customer implements Comparable<Customer>{
 		this.seatNum = seatNum;
 	}
 	
+	public boolean isSigned(){
+		if(seatNum== -1)  return false;
+		else return true;
+	}
 	public int getSeatNum(){
 		return this.seatNum;
 	}

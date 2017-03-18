@@ -8,14 +8,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Seller implements Runnable {
+
 	Queue<Customer> customers;
-	protected Random r = new Random();
+	protected static Random r = new Random();
+	
+	private int serviceTime;
+
 	//String type;
 	protected Seat[][] seating;
 
-	public Seller(Seat[][] s) {
+	public Seller(Seat[][] s, int serviceTime) {
 		customers = new LinkedList<Customer>();
-		
+		this.serviceTime = serviceTime;
 		//type = t;
 		seating = s;
 	}
@@ -56,23 +60,13 @@ public class Seller implements Runnable {
 			}
 		}
 
-		/*lock.lock();
-
-		try {
-			while (!customers.isEmpty()) {
-				cond.await();
-				// Get buyer in queue that is ready
-				Customer customer = customers.peek();
-				// Give seat
-			}
-			cond.signal();
-		}
-		finally {
-			lock.unlock();
-		}*/
 	}
 
+	@Override
 	public void run() {
+		// TODO Auto-generated method stub
 		
 	}
+	
+
 }
