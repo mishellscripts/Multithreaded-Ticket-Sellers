@@ -3,13 +3,13 @@ import java.util.Random;
 public class SellerM extends Seller{
 	//Seat[][] seating;
 	private int serviceTime;
-	
+
 	public SellerM(Seat[][] s) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
 		super(s);
 		serviceTime = r.nextInt(4) + 2;
 	}
-	
+
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {						
 			Object lock = new Object();
@@ -21,9 +21,18 @@ public class SellerM extends Seller{
 				// Find seat for the customer
 				// Case for Seller H
 				boolean found = false;
+				boolean addOrSub = true; // True = Add, False = Subtract
+				int addSubCount = 0;
+				int currentRow = 5;
+				
+				while (addSubCount <= 8) {
+					if (addOrSub) currentRow += addSubCount;
+					else currentRow -= addSubCount;
+				    addSubCount += 1;
+				}
 				
 				find_seat:
-				for (int i = 0; i < seating.length; i++) {
+					
 					for (int j = 0; j < seating[0].length; j++) {
 						if (seating[i][j].isSeatEmpty()) {
 							// Assign seat to customer
@@ -36,12 +45,24 @@ public class SellerM extends Seller{
 							break find_seat;
 						}
 					}
-				}
-				
+
 				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
 
 				notifyAll();
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		boolean found = false;
+		boolean addOrSub = true; // True = Add, False = Subtract
+		int addSubCount = 0;
+		int currentRow = 5;
+		while (addSubCount <= 8) {
+			if (addOrSub) currentRow += addSubCount;
+			else currentRow -= addSubCount;
+		    addSubCount += 1;
+		}
+		Syste
 	}
 }
