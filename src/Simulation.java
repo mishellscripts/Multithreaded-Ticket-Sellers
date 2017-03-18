@@ -58,6 +58,7 @@ public class Simulation {
 		for (int numSeller = 0; numSeller < allSellers.length; numSeller++)
 		{
 			allSellers[numSeller].run();
+			
 		}
 		
 		
