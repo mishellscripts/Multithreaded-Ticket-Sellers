@@ -2,10 +2,12 @@ import java.util.Random;
 
 public class SellerM extends Seller{
 	private int serviceTime;
+	private Object lock;
 
-	public SellerM(Seat[][] s) {
+	public SellerM(Seat[][] s, Object lk) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
-		super(s, r.nextInt(4) + 2);
+		super(s, r.nextInt(4) + 2, lk);
+		lock = lk;
 	}
 
 	public void sell() throws InterruptedException {
@@ -49,8 +51,14 @@ public class SellerM extends Seller{
 
 				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
 
+<<<<<<< HEAD
 				notifyAll();
 				customers.remove();
+=======
+				//notifyAll();
+				notify();
+
+>>>>>>> stash
 			}
 		}
 	}

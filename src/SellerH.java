@@ -2,14 +2,16 @@ import java.util.Random;
 
 public class SellerH extends Seller {
 
-	public SellerH(Seat[][] s) {
+	private Object lock;
+	public SellerH(Seat[][] s, Object lk) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
-		super(s, r.nextInt(2) + 1);
+		super(s, r.nextInt(2) + 1, lk);
+		lock = lk;
 	}
 
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {						
-			Object lock = new Object();
+			//Object lock = new Object();
 			synchronized(lock) {
 				while (customers.isEmpty()) return;
 				// Get customer in queue that is ready
@@ -37,8 +39,14 @@ public class SellerH extends Seller {
 				
 				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
 
+<<<<<<< HEAD
 				notifyAll();
 				customers.remove();
+=======
+				//notifyAll();
+				notify();
+
+>>>>>>> stash
 			}
 		}
 	}

@@ -7,6 +7,8 @@ public class Simulation {
 		//number of customers per seller per hour
 		int N = 10; //change to command line argument later?
 
+		final Object lock = new Object();
+
 		int maxRows = 10;
 		int maxCols = 10;
 		Seat[][] seating = createSeating(maxRows, maxCols);
@@ -15,47 +17,47 @@ public class Simulation {
 		Seller[] allSellers = new Seller[10];
 		for (int numSeller = 0; numSeller < 10; numSeller++)
 		{
-			if (numSeller == 0) allSellers[numSeller] = new SellerH(seating);
-			else if (numSeller >= 1 && numSeller < 4) allSellers[numSeller] = new SellerM(seating);
-			else if (numSeller >= 4 && numSeller < 10) allSellers[numSeller] = new SellerL(seating);
+			if (numSeller == 0) allSellers[numSeller] = new SellerH(seating, lock);
+			else if (numSeller >= 1 && numSeller < 4) allSellers[numSeller] = new SellerM(seating, lock);
+			else if (numSeller >= 4 && numSeller < 10) allSellers[numSeller] = new SellerL(seating, lock);
 		}
 
 		//add N customers for each seller for each hour
 		//initially add N customers for each seller's queue
 		allSellers = addNewCustomers(allSellers, N);
-<<<<<<< HEAD
-		
-		
-		
-//		//wake up all seller threads, so they can run in "parallel"
-		allSellers.notifyAll(); //use notifyAll for broadcast
-		for(int numSellers = 0; numSellers < 10; numSellers++)
-		{
-			Thread currentThread = new Thread(allSellers[numSellers]);
-			currentThread.start();
-		}
-		
-		
-=======
-
-
 
 		//wake up all seller threads, so they can run in "parallel"
-		allSellers.notifyAll(); //use notifyAll for broadcast
-		for(int numSellers = 0; numSellers < 10; numSellers++)
+		//allSellers.notifyAll(); //use notifyAll for broadcast
+		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
 			Thread currentThread = new Thread(allSellers[numSellers]);
 			currentThread.start();
 		}
 
-
->>>>>>> stash
 		//print the following with the current time
 		//- customer added to the queue
 		//- customer is attended (given a seat or told there are no seats)
 		//- customer gets a ticket and goes to seat
 		//- print seating chart everytime a ticket is sold
-		printSeating(seating, maxRows, maxCols);
+
+		//wait for all sellers to finish
+		//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~");
+		//		
+		//		for (int numSellers = 0; numSellers < allSellers.length; numSellers++)
+		//		{
+		//			Thread currentThread = new Thread(allSellers[numSellers]);
+		//			try {
+		//				currentThread.join();
+		//			} catch (InterruptedException e) {
+		//				// TODO Auto-generated catch block
+		//				e.printStackTrace();
+		//			}
+		//		}
+		//		System.out.println("2~~~~~~~~~~~~~~~~~~~~~~");
+
+		synchronized(lock) {
+			printSeating(seating, maxRows, maxCols);
+		}
 
 
 
@@ -113,11 +115,12 @@ public class Simulation {
 	 */
 	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
 	{
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		for (int row = 0; row < maxRows; row++)
 		{
 			for (int col = 0; col < maxCols; col++)
 			{
-				if (seating[row][col].isSeatEmpty()) System.out.printf("%5s ", "--");
+				if (seating[row][col].isSeatEmpty()) System.out.printf("%5s ", "O");
 				else System.out.printf("%5s ", "X");
 			}
 			System.out.println();

@@ -12,12 +12,14 @@ public class Seller implements Runnable {
 
 	//String type;
 	protected Seat[][] seating;
+	Object lock;
 
-	public Seller(Seat[][] s, int serviceTime) {
+	public Seller(Seat[][] s, int serviceTime, Object lk) {
 		customers = new LinkedList<Customer>();
 		this.serviceTime = serviceTime;
 		//type = t;
 		seating = s;
+		lock = lk;
 	}
 	
 	public void addCustomer(Customer c)
@@ -36,7 +38,7 @@ public class Seller implements Runnable {
 	// seller thread to serve one time slice (1 minute)
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {						
-			Object lock = new Object();
+			//Object lock = new Object();
 			synchronized(lock) {
 				while (customers.isEmpty()) return;
 				// Get customer in queue that is ready
@@ -64,8 +66,14 @@ public class Seller implements Runnable {
 				
 				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
 
+<<<<<<< HEAD
 				notifyAll();
 				customers.remove();
+=======
+				//notifyAll();
+				notify();
+				
+>>>>>>> stash
 			}
 		}
 	}
