@@ -41,19 +41,16 @@ public class Simulation {
 		//- print seating chart everytime a ticket is sold
 
 		//wait for all sellers to finish
-		//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~");
-		//		
-		//		for (int numSellers = 0; numSellers < allSellers.length; numSellers++)
-		//		{
-		//			Thread currentThread = new Thread(allSellers[numSellers]);
-		//			try {
-		//				currentThread.join();
-		//			} catch (InterruptedException e) {
-		//				// TODO Auto-generated catch block
-		//				e.printStackTrace();
-		//			}
-		//		}
-		//		System.out.println("2~~~~~~~~~~~~~~~~~~~~~~");
+		for (int numSellers = 0; numSellers < allSellers.length; numSellers++)
+		{
+			Thread currentThread = new Thread(allSellers[numSellers]);
+			try {
+				currentThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		synchronized(lock) {
 			printSeating(seating, maxRows, maxCols);
@@ -115,7 +112,7 @@ public class Simulation {
 	 */
 	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
 	{
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 		for (int row = 0; row < maxRows; row++)
 		{
 			for (int col = 0; col < maxCols; col++)
