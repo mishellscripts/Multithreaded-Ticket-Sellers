@@ -52,12 +52,11 @@ public class Simulation {
 			allSellers[numSeller].sortQueue();
 		}
 		
-		
 		//wake up all seller threads, so they can run in "parallel"
 		//use notifyAll for broadcast
 		for (int numSeller = 0; numSeller < allSellers.length; numSeller++)
 		{
-			allSellers[numSeller].run();
+			new Thread(allSellers[numSeller]).start();
 		}
 		
 		
