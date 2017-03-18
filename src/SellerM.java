@@ -14,7 +14,7 @@ public class SellerM extends Seller{
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {						
 			//Object lock = new Object();
-			
+
 			while (customers.isEmpty()) return;
 			// Get customer in queue that is ready
 			Customer customer = customers.peek();
@@ -24,37 +24,38 @@ public class SellerM extends Seller{
 			boolean found = false;
 			boolean flag = true;
 			int counter = 1;
-			
+
 			synchronized(lock) {
 				find_seat:
-				for(int i = 5; i >= 0 && i < seating.length;) {
-					for (int j = 0; j < seating[0].length; j++) {
-						if (seating[i][j].isSeatEmpty()) {
-							// Assign seat to customer
-							// Seat number = (Row x 10) + (Col + 1)
-							int seatNum = (i*10)+j+1;
-							Seat seat = new Seat(seatNum);
-							seat.assignSeat(customer);
-							seating[i][j] = seat;
-							found = true;
-							break find_seat;
+					for(int i = 5; i >= 0 && i < seating.length;) {
+						for (int j = 0; j < seating[0].length; j++) {
+							if (seating[i][j].isSeatEmpty()) {
+								// Assign seat to customer
+								// Seat number = (Row x 10) + (Col + 1)
+								int seatNum = (i*10)+j+1;
+								Seat seat = new Seat(seatNum);
+								seat.assignSeat(customer);
+								seating[i][j] = seat;
+								found = true;
+								break find_seat;
+							}
 						}
+						if(flag == true){
+							i += counter;
+							flag = false;
+						}
+						else{
+							i -= counter;
+							flag = true;
+						}
+						counter++;
 					}
-					if(flag == true){
-						i += counter;
-						flag = false;
-					}
-					else{
-						i -= counter;
-						flag = true;
-					}
-					counter++;
-				}
+			lock.notifyAll();
+
 			}
-			
+
 			if (!found) System.out.println("M - Sorry, the concert is sold out!");
 
-			notifyAll();
 			customers.remove();
 		}
 	}
