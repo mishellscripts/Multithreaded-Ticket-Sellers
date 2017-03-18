@@ -2,9 +2,11 @@ import java.util.Random;
 
 public class SellerL extends Seller{
 	
-	public SellerL(Seat[][] s) {
+	private Object lock;
+	public SellerL(Seat[][] s, Object lk) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
-		super(s, r.nextInt(2) + 1);
+		super(s, r.nextInt(2) + 1, lk);
+		lock = lk;
 		
 	}
 	
