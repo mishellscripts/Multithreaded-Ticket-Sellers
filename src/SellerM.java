@@ -51,14 +51,8 @@ public class SellerM extends Seller{
 
 				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
 
-<<<<<<< HEAD
 				notifyAll();
 				customers.remove();
-=======
-				//notifyAll();
-				notify();
-
->>>>>>> stash
 			}
 		}
 	}
