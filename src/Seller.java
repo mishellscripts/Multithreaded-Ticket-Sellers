@@ -43,6 +43,15 @@ public class Seller implements Runnable {
 				// Get customer in queue that is ready
 				Customer customer = customers.peek();
 				
+				// Find seat for the customer
+				// Case for Seller H
+				/*for (int i = 0; i < seating.length; i++) {
+					for (int j = 0; j < seating[0].length; j++) {
+						if (seating[0][0]customer.se)
+					}
+				}*/
+				
+				// Assign seat to customer
 				notifyAll();
 			}
 		}

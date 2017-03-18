@@ -15,4 +15,7 @@ public class Seat {
 		seatTaken = c;
 	}
 
+	public boolean isSeatEmpty() {
+		return seatTaken == null;
+	}
 }
