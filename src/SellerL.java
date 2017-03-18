@@ -17,7 +17,7 @@ public class SellerL extends Seller{
 				Customer customer = customers.peek();
 
 				// Find seat for the customer
-				// Case for Seller H
+				// Case for Seller L
 				boolean found = false;
 				
 				find_seat:
