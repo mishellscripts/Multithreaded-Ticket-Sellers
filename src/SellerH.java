@@ -39,7 +39,7 @@ public class SellerH extends Seller {
 				}
 			}
 			
-			if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
+			if (!found) System.out.println("H - Sorry, the concert is sold out!");
 
 			notifyAll();
 			customers.remove();
