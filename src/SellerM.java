@@ -31,8 +31,11 @@ public class SellerM extends Seller{
 				    addSubCount += 1;
 				}
 				
+				
+				boolean flag = true;
+				int counter = 1;
 				find_seat:
-					
+				for(int i = 5; i >= 0 && i < seating.length;) {
 					for (int j = 0; j < seating[0].length; j++) {
 						if (seating[i][j].isSeatEmpty()) {
 							// Assign seat to customer
@@ -45,6 +48,17 @@ public class SellerM extends Seller{
 							break find_seat;
 						}
 					}
+					if(flag == true){
+						i += counter;
+						flag = false;
+					}
+					else{
+						i -= counter;
+						flag = true;
+					}
+					
+				}
+					
 
 				if (!found) System.out.println("Sorry, the concert is sold out. Please come again!");
 
