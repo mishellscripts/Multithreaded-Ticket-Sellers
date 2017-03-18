@@ -12,7 +12,7 @@ public class SellerL extends Seller{
 		while (!customers.isEmpty()) {						
 			Object lock = new Object();
 			synchronized(lock) {
-				while (customers.isEmpty()) wait();
+				while (customers.isEmpty()) return;
 				// Get customer in queue that is ready
 				Customer customer = customers.peek();
 

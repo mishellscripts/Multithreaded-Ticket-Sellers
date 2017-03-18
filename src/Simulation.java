@@ -27,12 +27,12 @@ public class Simulation {
 		
 		
 //		//wake up all seller threads, so they can run in "parallel"
-//		allSellers.notifyAll(); //use notifyAll for broadcast
-//		for(int numSellers = 0; numSellers < 10; numSellers++)
-//		{
-//			Thread currentThread = new Thread(allSellers[numSellers]);
-//			currentThread.start();
-//		}
+		allSellers.notifyAll(); //use notifyAll for broadcast
+		for(int numSellers = 0; numSellers < 10; numSellers++)
+		{
+			Thread currentThread = new Thread(allSellers[numSellers]);
+			currentThread.start();
+		}
 		
 		
 		//print the following with the current time
