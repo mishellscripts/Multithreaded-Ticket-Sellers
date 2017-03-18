@@ -17,12 +17,12 @@ public class SellerL extends Seller{
 				Customer customer = customers.peek();
 
 				// Find seat for the customer
-				// Case for Seller H
+				// Case for Seller L
 				boolean found = false;
 				
 				find_seat:
-				for (int i = seating.length - 1; i >= 0; i--) {
-					for (int j = seating[0].length - 1; j >= 0; j--) {
+				for (int i = seating.length-1; i < 0; i--) {
+					for (int j = 0; j < seating[0].length; j++) {
 						if (seating[i][j].isSeatEmpty()) {
 							// Assign seat to customer
 							// Seat number = (Row x 10) + (Col + 1)

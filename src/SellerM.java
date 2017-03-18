@@ -1,7 +1,6 @@
 import java.util.Random;
 
 public class SellerM extends Seller{
-
 	//Seat[][] seating;
 	private int serviceTime;
 
@@ -37,7 +36,7 @@ public class SellerM extends Seller{
 				int counter = 1;
 				find_seat:
 				for(int i = 5; i >= 0 && i < seating.length;) {
-					for (int j = seating[0].length - 1; j >= 0 || j < seating[0].length;) {
+					for (int j = 0; j < seating[0].length; j++) {
 						if (seating[i][j].isSeatEmpty()) {
 							// Assign seat to customer
 							// Seat number = (Row x 10) + (Col + 1)
@@ -47,12 +46,6 @@ public class SellerM extends Seller{
 							seating[i][j] = seat;
 							found = true;
 							break find_seat;
-						}
-						if(flag == true){
-							j--;
-						}
-						else{
-							j++;
 						}
 					}
 					if(flag == true){
@@ -74,16 +67,5 @@ public class SellerM extends Seller{
 		}
 	}
 	
-	public static void main(String[] args) {
-		boolean found = false;
-		boolean addOrSub = true; // True = Add, False = Subtract
-		int addSubCount = 0;
-		int currentRow = 5;
-		while (addSubCount <= 8) {
-			if (addOrSub) currentRow += addSubCount;
-			else currentRow -= addSubCount;
-		    addSubCount += 1;
-		}
-		Syste
-	}
+	
 }
