@@ -21,17 +21,6 @@ public class SellerM extends Seller{
 				// Find seat for the customer
 				// Case for Seller H
 				boolean found = false;
-				boolean addOrSub = true; // True = Add, False = Subtract
-				int addSubCount = 0;
-				int currentRow = 5;
-				
-				while (addSubCount <= 8) {
-					if (addOrSub) currentRow += addSubCount;
-					else currentRow -= addSubCount;
-				    addSubCount += 1;
-				}
-				
-				
 				boolean flag = true;
 				int counter = 1;
 				find_seat:

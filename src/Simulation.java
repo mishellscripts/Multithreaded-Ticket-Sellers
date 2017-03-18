@@ -23,7 +23,6 @@ public class Simulation {
 		//add N customers for each seller for each hour
 		//initially add N customers for each seller's queue
 		allSellers = addNewCustomers(allSellers, N);
-<<<<<<< HEAD
 		
 		
 		
@@ -36,20 +35,6 @@ public class Simulation {
 		}
 		
 		
-=======
-
-
-
-		//wake up all seller threads, so they can run in "parallel"
-		allSellers.notifyAll(); //use notifyAll for broadcast
-		for(int numSellers = 0; numSellers < 10; numSellers++)
-		{
-			Thread currentThread = new Thread(allSellers[numSellers]);
-			currentThread.start();
-		}
-
-
->>>>>>> stash
 		//print the following with the current time
 		//- customer added to the queue
 		//- customer is attended (given a seat or told there are no seats)
