@@ -1,14 +1,11 @@
 import java.util.Random;
 
 public class SellerM extends Seller{
-<<<<<<< HEAD
 
-	
-=======
 	//Seat[][] seating;
 	private int serviceTime;
 
->>>>>>> 00231be48498f770b6f7fe9ec6fb40e20c15dc17
+
 	public SellerM(Seat[][] s) {
 		// Seller H takes 1 or 2 minutes to complete a ticket sale
 		super(s, r.nextInt(4) + 2);
@@ -40,7 +37,7 @@ public class SellerM extends Seller{
 				int counter = 1;
 				find_seat:
 				for(int i = 5; i >= 0 && i < seating.length;) {
-					for (int j = 0; j < seating[0].length; j++) {
+					for (int j = seating[0].length - 1; j >= 0 || j < seating[0].length;) {
 						if (seating[i][j].isSeatEmpty()) {
 							// Assign seat to customer
 							// Seat number = (Row x 10) + (Col + 1)
@@ -51,6 +48,12 @@ public class SellerM extends Seller{
 							found = true;
 							break find_seat;
 						}
+						if(flag == true){
+							j--;
+						}
+						else{
+							j++;
+						}
 					}
 					if(flag == true){
 						i += counter;
@@ -60,7 +63,7 @@ public class SellerM extends Seller{
 						i -= counter;
 						flag = true;
 					}
-					
+					counter++;
 				}
 					
 

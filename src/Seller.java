@@ -11,7 +11,7 @@ public class Seller implements Runnable {
 
 	Queue<Customer> customers;
 	protected static Random r = new Random();
-	
+	protected int timer = 0;
 	private int serviceTime;
 
 	//String type;
