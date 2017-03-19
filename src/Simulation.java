@@ -27,7 +27,7 @@ public class Simulation {
 		allSellers = addNewCustomers(allSellers, N);
 
 		//wake up all seller threads, so they can run in "parallel"
-		//allSellers.notifyAll(); //use notifyAll for broadcast
+		//lock.notifyAll(); //use notifyAll for broadcast
 		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
 			Thread currentThread = new Thread(allSellers[numSellers]);

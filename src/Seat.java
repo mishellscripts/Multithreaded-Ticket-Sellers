@@ -18,4 +18,8 @@ public class Seat {
 	public boolean isSeatEmpty() {
 		return seatTaken == null;
 	}
+	
+	public int getSeatNumber() {
+		return seatNumber;
+	}
 }
