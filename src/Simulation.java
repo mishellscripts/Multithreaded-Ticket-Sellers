@@ -32,6 +32,12 @@ public class Simulation {
 		{
 			Thread currentThread = new Thread(allSellers[numSellers]);
 			currentThread.start();
+			try {
+				currentThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		//print the following with the current time

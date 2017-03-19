@@ -50,7 +50,7 @@ public class SellerM extends Seller{
 						}
 						counter++;
 					}
-			lock.notifyAll();
+			//lock.notifyAll();
 
 			}
 

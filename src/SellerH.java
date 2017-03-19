@@ -37,7 +37,7 @@ public class SellerH extends Seller {
 							}
 						}
 					}
-			lock.notifyAll();
+			//lock.notifyAll();
 			}
 
 			if (!found) System.out.println("H - Sorry, the concert is sold out!");
