@@ -19,7 +19,7 @@ public class SellerH extends Seller {
 
 			// Find seat for the customer
 			// Case for Seller H
-			boolean found = false;
+			Seat seat = null;
 
 			synchronized(lock) {	
 				find_seat:
@@ -29,10 +29,9 @@ public class SellerH extends Seller {
 								// Assign seat to customer
 								// Seat number = (Row x 10) + (Col + 1)
 								int seatNum = (i*10)+j+1;
-								Seat seat = new Seat(seatNum);
+								seat = new Seat(seatNum);
 								seat.assignSeat(customer);
 								seating[i][j] = seat;
-								found = true;
 								break find_seat;
 							}
 						}
@@ -40,8 +39,8 @@ public class SellerH extends Seller {
 			lock.notifyAll();
 			}
 
-			if (!found) System.out.println("H - Sorry, the concert is sold out!");
-
+			if (seat == null) System.out.println("H - Sorry, the concert is sold out!");
+			else System.out.println("H - Success! Your seat is " + seat.getSeatNumber());
 
 			customers.remove();
 		}
