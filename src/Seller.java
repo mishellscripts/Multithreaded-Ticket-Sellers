@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-public class Seller implements Runnable {
+public abstract class Seller implements Runnable {
 
 	Queue<Customer> customers;
 	protected static Random r = new Random();
@@ -35,6 +35,7 @@ public class Seller implements Runnable {
 			customers.add(c);
 	}
 
+<<<<<<< HEAD
 	// seller thread to serve one time slice (1 minute)
 	public void sell() throws InterruptedException {
 		while (!customers.isEmpty()) {						
@@ -74,15 +75,12 @@ public class Seller implements Runnable {
 
 		}
 	}
+=======
+	public abstract void sell();
+>>>>>>> stash
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		try {
-			sell();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		sell();
 	}
 }

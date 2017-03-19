@@ -10,7 +10,7 @@ public class SellerM extends Seller{
 		lock = lk;
 	}
 
-	public void sell() throws InterruptedException {
+	public void sell() {
 		while (!customers.isEmpty()) {						
 			//Object lock = new Object();
 
