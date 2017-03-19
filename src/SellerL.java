@@ -14,7 +14,7 @@ public class SellerL extends Seller{
 		while (!customers.isEmpty()) {						
 			//Object lock = new Object();
 
-			while (customers.isEmpty()) return;
+			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready
 			Customer customer = customers.peek();
 
@@ -24,7 +24,7 @@ public class SellerL extends Seller{
 
 			synchronized(lock) {
 				find_seat:
-					for (int i = seating.length-1; i < 0; i--) {
+					for (int i = seating.length-1; i >= 0; i--) {
 						for (int j = 0; j < seating[0].length; j++) {
 							if (seating[i][j].isSeatEmpty()) {
 								// Assign seat to customer

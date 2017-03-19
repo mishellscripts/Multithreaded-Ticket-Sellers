@@ -28,11 +28,11 @@ public class Simulation {
 
 		//wake up all seller threads, so they can run in "parallel"
 		//lock.notifyAll(); //use notifyAll for broadcast
-		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
-		{
-			Thread currentThread = new Thread(allSellers[numSellers]);
-			currentThread.start();
-		}
+//		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
+//		{
+//			Thread currentThread = new Thread(allSellers[numSellers]);
+//			currentThread.start();
+//		}
 
 		//print the following with the current time
 		//- customer added to the queue
@@ -44,6 +44,7 @@ public class Simulation {
 		for (int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
 			Thread currentThread = new Thread(allSellers[numSellers]);
+			currentThread.start();
 			try {
 				currentThread.join();
 			} catch (InterruptedException e) {

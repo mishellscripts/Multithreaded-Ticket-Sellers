@@ -13,7 +13,7 @@ public class SellerH extends Seller {
 		while (!customers.isEmpty()) {						
 			//Object lock = new Object();
 
-			while (customers.isEmpty()) return;
+			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready
 			Customer customer = customers.peek();
 
