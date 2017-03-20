@@ -22,4 +22,8 @@ public class Seat {
 	public int getSeatNumber() {
 		return seatNumber;
 	}
+	
+	public Customer getCustomer(){
+		return seatTaken;
+	}
 }

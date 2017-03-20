@@ -17,9 +17,12 @@ public class Simulation {
 		Seller[] allSellers = new Seller[10];
 		for (int numSeller = 0; numSeller < 10; numSeller++)
 		{
-			if (numSeller == 0) allSellers[numSeller] = new SellerH(seating, lock);
-			else if (numSeller >= 1 && numSeller < 4) allSellers[numSeller] = new SellerM(seating, lock);
-			else if (numSeller >= 4 && numSeller < 10) allSellers[numSeller] = new SellerL(seating, lock);
+			if (numSeller == 0) 
+				allSellers[numSeller] = new SellerH(seating, "H" + (numSeller + 1), lock);
+			else if (numSeller >= 1 && numSeller < 4) 
+				allSellers[numSeller] = new SellerM(seating, "M" + (numSeller), lock);
+			else if (numSeller >= 4 && numSeller < 10) 
+				allSellers[numSeller] = new SellerL(seating, "L" + (numSeller - 3), lock);
 		}
 
 		//add N customers for each seller for each hour
@@ -28,13 +31,28 @@ public class Simulation {
 
 		//wake up all seller threads, so they can run in "parallel"
 		//lock.notifyAll(); //use notifyAll for broadcast
+		Thread []threads = new Thread[allSellers.length];
+		//for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
+		//{
+		//	Thread currentThread = new Thread(allSellers[numSellers]);
+		//	currentThread.start();
+		//}
 		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
-			Thread currentThread = new Thread(allSellers[numSellers]);
-			currentThread.start();
+			threads[numSellers] = new Thread(allSellers[numSellers]);
+			threads[numSellers].start();
+		}
+		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
+		{
+			try {
+				threads[numSellers].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
 		}
 		
-		
+
 
 		//print the following with the current time
 		//- customer added to the queue
@@ -43,19 +61,8 @@ public class Simulation {
 		//- print seating chart everytime a ticket is sold
 
 		//wait for all sellers to finish
-		//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~");
-		//		
-		//		for (int numSellers = 0; numSellers < allSellers.length; numSellers++)
-		//		{
-		//			Thread currentThread = new Thread(allSellers[numSellers]);
-		//			try {
-		//				currentThread.join();
-		//			} catch (InterruptedException e) {
-		//				// TODO Auto-generated catch block
-		//				e.printStackTrace();
-		//			}
-		//		}
-		//		System.out.println("2~~~~~~~~~~~~~~~~~~~~~~");
+
+
 
 		synchronized(lock) {
 			printSeating(seating, maxRows, maxCols);
@@ -115,6 +122,7 @@ public class Simulation {
 	 * @param maxRows: max number of rows for the chart
 	 * @param maxCols: max number of columns for the chart
 	 */
+	/*
 	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
 	{
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -124,6 +132,22 @@ public class Simulation {
 			{
 				if (seating[row][col].isSeatEmpty()) System.out.printf("%5s ", "O");
 				else System.out.printf("%5s ", "X");
+			}
+			System.out.println();
+		}
+	}
+	*/
+	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
+	{
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for (int row = 0; row < maxRows; row++)
+		{
+			for (int col = 0; col < maxCols; col++)
+			{
+				if (seating[row][col].isSeatEmpty()) 
+					System.out.printf("%7s ", "O");
+				else 
+					System.out.printf("%7s ", seating[row][col].getCustomer().getTicket());
 			}
 			System.out.println();
 		}

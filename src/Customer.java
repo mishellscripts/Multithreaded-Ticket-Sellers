@@ -5,7 +5,16 @@ public class Customer implements Comparable<Customer>{
 	private int arrivalTime;
 	private int seatNum;
 	private int customerID;
+	private String ticket;
 	
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+
 	public Customer(int customerID){
 		arrivalTime = r.nextInt(59);
 		this.customerID = customerID;
