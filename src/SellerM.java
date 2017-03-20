@@ -1,4 +1,4 @@
-import java.util.Random;
+
 
 public class SellerM extends Seller{
 	private Object lock;
@@ -33,13 +33,7 @@ public class SellerM extends Seller{
 								// Seat number = (Row x 10) + (Col + 1)
 								int seatNum = (i*10)+j+1;
 								seat = new Seat(seatNum);
-								if(ticketNum < 10)
-									customer.setTicket(sellerID + "0" + ticketNum);
-								else
-									customer.setTicket(sellerID + ticketNum);
-								ticketNum++;
-								seat.assignSeat(customer);
-								seating[i][j] = seat;
+								super.assignSeat(customer, seat, i, j);
 								break find_seat;
 							}
 						}
@@ -62,9 +56,7 @@ public class SellerM extends Seller{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (seat == null) System.out.println(sellerID + " - Sorry, the concert is sold out!");
-			else System.out.println(sellerID + " - Success! Your seat is " + seat.getSeatNumber());
-
+			printMsg(customer, seat);
 			customers.remove();
 		}
 	}
