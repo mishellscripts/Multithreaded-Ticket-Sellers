@@ -11,36 +11,42 @@ public abstract class Seller implements Runnable {
 	protected int serviceTime;
 	protected int ticketNum = 1;
 	protected int time = 0;
-
+	
+	protected long past_time;
+	protected int elapse_time;
+	protected long currentTime;
 	//String type;
 	protected Seat[][] seating;
-	Object lock;
+	private Object lock;
 
-	public Seller(Seat[][] s, int serviceTime, String sellerID, Object lk) {
+	public Seller(Seat[][] s, int serviceTime, String sellerID, Object lk, long current_time) {
 		customers = new LinkedList<Customer>();
 		this.serviceTime = serviceTime;
-		//type = t;
 		seating = s;
 		lock = lk;
 		this.sellerID = sellerID;
+		this.past_time = current_time;
+		
 	}
 	
 	protected void calTime(Customer customer){
-		time = customer.getArrivalTime() + serviceTime;
+		
+		time = (int)(currentTime + serviceTime); //+ elapse_time;
+		//System.out.println("----------------" + customer.getArrivalTime() + "---sid: " + this.sellerID + "service: " +this.serviceTime);
 		customer.setTime(time);
 	}
 	
+	
 	protected void printMsg(Customer customer, Seat seat){
-		int min = customer.getTime() / 60;
-		int sec = customer.getTime() % 60;
+		int hour = customer.getTime() / 60;
+		int min = customer.getTime() % 60;
 		String time = "";
-		if(sec < 10) time = min + ":0" + sec;
-		else time = min + ":" + sec;
+		if(min < 10) time = hour + ":0" + min;
+		else time = hour + ":" + min;
 		if (seat == null) System.out.println(time + "  " + sellerID + " - Sorry, the concert is sold out!");
 		else System.out.println(time + "  " + sellerID + " - Success! Your seat is " + seat.getSeatNumber());
 
 	}
-	
 	protected void assignSeat(Customer customer, Seat seat, int i, int j){
 		if(ticketNum < 10)
 			customer.setTicket(sellerID + "0" + ticketNum);
@@ -52,6 +58,15 @@ public abstract class Seller implements Runnable {
 		seating[i][j] = seat;
 	}
 
+	protected void update(){
+		
+		currentTime = System.currentTimeMillis() - this.past_time;
+		if(currentTime < 1000)
+			currentTime = 0;
+		else
+			currentTime /= 1000;
+	}
+	
 	public void addCustomer(Customer c)
 	{
 		customers.add(c);

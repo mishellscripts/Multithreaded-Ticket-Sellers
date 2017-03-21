@@ -25,7 +25,7 @@ public class Customer implements Comparable<Customer>{
 	}
 
 	public Customer(int customerID){
-		arrivalTime = r.nextInt(3540);
+		arrivalTime = r.nextInt(60);
 		this.customerID = customerID;
 		seatNum = -1;
 	}

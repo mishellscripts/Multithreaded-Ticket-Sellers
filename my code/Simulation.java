@@ -1,11 +1,22 @@
-public class Simulation {
-	public void wakeupSellers() {
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
-	}
+public class Simulation {
+	
+	
 	public static void main(String[] args) {
 
 		//number of customers per seller per hour
-		int N = 10; //change to command line argument later?
+		//prompt user
+		int N = 0;
+		Scanner userInput = new Scanner(System.in);
+		System.out.println("Enter the number of customers per seller: ");
+		
+		if(userInput.hasNextInt())
+			N = userInput.nextInt(); 
+		else
+			System.out.println("Please restart and enter an integer.");
 
 		final Object lock = new Object();
 
@@ -29,19 +40,31 @@ public class Simulation {
 		//initially add N customers for each seller's queue
 		allSellers = addNewCustomers(allSellers, N);
 
-		//wake up all seller threads, so they can run in "parallel"
-		//lock.notifyAll(); //use notifyAll for broadcast
+		
 		Thread []threads = new Thread[allSellers.length];
-		//for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
-		//{
-		//	Thread currentThread = new Thread(allSellers[numSellers]);
-		//	currentThread.start();
-		//}
+		
+		
 		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
 			threads[numSellers] = new Thread(allSellers[numSellers]);
 			threads[numSellers].start();
+			
 		}
+		
+		/*
+		TimerTask task = new TimerTask(){
+
+			@Override
+			public void run() {
+				System.out.println("ten second has passed");
+			}
+			
+		};
+		
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(task, 1000,1000);
+		*/
+		
 		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
 			try {
@@ -67,11 +90,9 @@ public class Simulation {
 		synchronized(lock) {
 			printSeating(seating, maxRows, maxCols);
 		}
+		
+		//timer.cancel();
 
-
-
-		//seller needs to take in parameters or have some ref to
-		//2D array, time?, universal lock
 	}
 
 	/**
@@ -122,21 +143,7 @@ public class Simulation {
 	 * @param maxRows: max number of rows for the chart
 	 * @param maxCols: max number of columns for the chart
 	 */
-	/*
-	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
-	{
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		for (int row = 0; row < maxRows; row++)
-		{
-			for (int col = 0; col < maxCols; col++)
-			{
-				if (seating[row][col].isSeatEmpty()) System.out.printf("%5s ", "O");
-				else System.out.printf("%5s ", "X");
-			}
-			System.out.println();
-		}
-	}
-	*/
+	
 	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
 	{
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

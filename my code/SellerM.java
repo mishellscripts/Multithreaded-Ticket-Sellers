@@ -4,8 +4,7 @@ public class SellerM extends Seller{
 	private Object lock;
 
 	public SellerM(Seat[][] s, String sellerID, Object lk) {
-		// Seller H takes 1 or 2 minutes to complete a ticket sale
-		super(s, r.nextInt(4) + 2, sellerID, lk);
+		super(s, r.nextInt(3) + 2, sellerID, lk, System.currentTimeMillis());
 		lock = lk;
 	}
 
@@ -15,6 +14,7 @@ public class SellerM extends Seller{
 
 			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready
+			update();
 			Customer customer = customers.peek();
 
 			// Find seat for the customer
@@ -23,8 +23,14 @@ public class SellerM extends Seller{
 			int counter = 1;
 
 			Seat seat = null;
+
+			//System.out.println(currentTime);
 			
-			synchronized(lock) {		
+			synchronized(lock) {
+					
+				update();
+					//System.out.println("got in");
+				if(currentTime  >= (customer.getArrivalTime())){
 				find_seat:
 					for(int i = 5; i >= 0 && i < seating.length;) {
 						for (int j = 0; j < seating[0].length; j++) {
@@ -34,6 +40,9 @@ public class SellerM extends Seller{
 								int seatNum = (i*10)+j+1;
 								seat = new Seat(seatNum);
 								super.assignSeat(customer, seat, i, j);
+								//update();
+								printMsg(customer, seat);
+								customers.remove();
 								break find_seat;
 							}
 						}
@@ -47,18 +56,21 @@ public class SellerM extends Seller{
 						}
 						counter++;
 					}
-			//lock.notifyAll();
+				
+	
 			}
+		}
 			if(seat != null){
 				try {
-					Thread.sleep(serviceTime * 100);
+					Thread.sleep(serviceTime * 1000);
+					update();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			printMsg(customer, seat);
-			customers.remove();
+		
+
 		}
 	}
 	
