@@ -13,11 +13,15 @@ public class SellerH extends Seller {
 		while (!customers.isEmpty()) {						
 			//Object lock = new Object();
 
+			Customer customer = null;
 			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready
 			update();
-			Customer customer = customers.peek();
-
+			
+			if(currentTime <= 59)
+				customer = customers.peek();
+			else
+				return;
 			// Find seat for the customer
 			// Case for Seller H
 			Seat seat = null;

@@ -11,11 +11,14 @@ public class SellerM extends Seller{
 	public void sell() {
 		while (!customers.isEmpty()) {						
 			//Object lock = new Object();
-
+			Customer customer;
 			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready
 			update();
-			Customer customer = customers.peek();
+			if(currentTime <= 59)
+				customer = customers.peek();
+			else
+				return;
 
 			// Find seat for the customer
 			// Case for Seller M
