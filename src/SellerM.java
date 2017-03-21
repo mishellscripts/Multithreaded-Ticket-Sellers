@@ -24,7 +24,7 @@ public class SellerM extends Seller{
 
 			Seat seat = null;
 			
-			synchronized(lock) {
+			synchronized(lock) {		
 				find_seat:
 					for(int i = 5; i >= 0 && i < seating.length;) {
 						for (int j = 0; j < seating[0].length; j++) {
@@ -48,13 +48,14 @@ public class SellerM extends Seller{
 						counter++;
 					}
 			//lock.notifyAll();
-
 			}
-			try {
-				Thread.sleep(serviceTime * 100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(seat != null){
+				try {
+					Thread.sleep(serviceTime * 100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			printMsg(customer, seat);
 			customers.remove();

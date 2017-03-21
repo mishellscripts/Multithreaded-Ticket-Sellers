@@ -38,11 +38,13 @@ public class SellerL extends Seller{
 					}
 			//lock.notifyAll();
 			}
-			try {
-				Thread.sleep(serviceTime * 100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(seat != null){
+				try {
+					Thread.sleep(serviceTime * 100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			printMsg(customer, seat);
 			
