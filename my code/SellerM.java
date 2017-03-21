@@ -14,7 +14,9 @@ public class SellerM extends Seller{
 			Customer customer;
 			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready
-			update();
+			
+			
+			update(); // get the current time
 			if(currentTime <= 59)
 				customer = customers.peek();
 			else

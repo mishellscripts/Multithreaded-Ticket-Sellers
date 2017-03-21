@@ -51,19 +51,8 @@ public class Simulation {
 			
 		}
 		
-		/*
-		TimerTask task = new TimerTask(){
 
-			@Override
-			public void run() {
-				System.out.println("ten second has passed");
-			}
-			
-		};
 		
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(task, 1000,1000);
-		*/
 		
 		for(int numSellers = 0; numSellers < allSellers.length; numSellers++)
 		{
@@ -86,12 +75,12 @@ public class Simulation {
 		//wait for all sellers to finish
 
 
-
+		/*
 		synchronized(lock) {
 			printSeating(seating, maxRows, maxCols);
 		}
+		*/
 		
-		//timer.cancel();
 
 	}
 

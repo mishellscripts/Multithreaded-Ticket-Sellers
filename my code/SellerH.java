@@ -44,7 +44,7 @@ public class SellerH extends Seller {
 								//update();
 								printMsg(customer, seat);
 								customers.remove();
-
+								
 								break find_seat;
 							}
 						}

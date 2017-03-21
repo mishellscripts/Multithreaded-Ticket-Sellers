@@ -11,7 +11,6 @@ public class SellerL extends Seller{
 
 	public void sell() {
 		while (!customers.isEmpty()) {						
-			//Object lock = new Object();
 			Customer customer;
 			if (customers.isEmpty()) return;
 			// Get customer in queue that is ready

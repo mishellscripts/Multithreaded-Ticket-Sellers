@@ -45,6 +45,8 @@ public abstract class Seller implements Runnable {
 		else time = hour + ":" + min;
 		if (seat == null) System.out.println(time + "  " + sellerID + " - Sorry, the concert is sold out!");
 		else System.out.println(time + "  " + sellerID + " - Success! Your seat is " + seat.getSeatNumber());
+		
+		printSeating(this.seating, 10, 10);
 
 	}
 	protected void assignSeat(Customer customer, Seat seat, int i, int j){
@@ -87,4 +89,20 @@ public abstract class Seller implements Runnable {
 	public void run() {
 		sell();
 	}
+	public static void printSeating(Seat[][] seating, int maxRows, int maxCols)
+	{
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		for (int row = 0; row < maxRows; row++)
+		{
+			for (int col = 0; col < maxCols; col++)
+			{
+				if (seating[row][col].isSeatEmpty()) 
+					System.out.printf("%7s ", "-");
+				else 
+					System.out.printf("%7s ", seating[row][col].getCustomer().getTicket());
+			}
+			System.out.println();
+		}
+	}
+	
 }
