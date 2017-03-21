@@ -1,36 +1,64 @@
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-public class Seller implements Runnable {
+public abstract class Seller implements Runnable {
 
 	Queue<Customer> customers;
 	protected static Random r = new Random();
-	
-	private int serviceTime;
+	protected String sellerID;
+	protected int serviceTime;
+	protected int ticketNum = 1;
+	protected int time = 0;
 
 	//String type;
 	protected Seat[][] seating;
+	Object lock;
 
-	public Seller(Seat[][] s, int serviceTime) {
+	public Seller(Seat[][] s, int serviceTime, String sellerID, Object lk) {
 		customers = new LinkedList<Customer>();
 		this.serviceTime = serviceTime;
 		//type = t;
 		seating = s;
+		lock = lk;
+		this.sellerID = sellerID;
 	}
 	
+	protected void calTime(Customer customer){
+		time = customer.getArrivalTime() + serviceTime;
+		customer.setTime(time);
+	}
+	
+	protected void printMsg(Customer customer, Seat seat){
+		int min = customer.getTime() / 60;
+		int sec = customer.getTime() % 60;
+		String time = "";
+		if(sec < 10) time = min + ":0" + sec;
+		else time = min + ":" + sec;
+		if (seat == null) System.out.println(time + "  " + sellerID + " - Sorry, the concert is sold out!");
+		else System.out.println(time + "  " + sellerID + " - Success! Your seat is " + seat.getSeatNumber());
+
+	}
+	
+	protected void assignSeat(Customer customer, Seat seat, int i, int j){
+		if(ticketNum < 10)
+			customer.setTicket(sellerID + "0" + ticketNum);
+		else
+			customer.setTicket(sellerID + ticketNum);
+		calTime(customer);
+		ticketNum++;
+		seat.assignSeat(customer);
+		seating[i][j] = seat;
+	}
+
 	public void addCustomer(Customer c)
 	{
 		customers.add(c);
 	}
-	
+
 	public void sortQueue(){
-		Customer [] temp = (Customer[]) customers.toArray();
+		Customer [] temp = customers.toArray(new Customer[customers.size()]);
 		customers.clear();
 		Arrays.sort(temp);
 		for(Customer c: temp)
@@ -38,26 +66,10 @@ public class Seller implements Runnable {
 	}
 
 	// seller thread to serve one time slice (1 minute)
-	public void sell() throws InterruptedException {
-		while (!customers.isEmpty()) {		
-				
-			Object lock = new Object();
-			synchronized(lock) {
-				while (customers.isEmpty()) wait();
-				// Get customer in queue that is ready
-				Customer customer = customers.peek();
-				
-				notifyAll();
-			}
-		}
-
-	}
+	public abstract void sell();
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		sell();
 	}
-	
-
 }

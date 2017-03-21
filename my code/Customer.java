@@ -5,10 +5,29 @@ public class Customer implements Comparable<Customer>{
 	private int arrivalTime;
 	private int seatNum;
 	private int customerID;
+	private String ticket;
+	private int time;
 	
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+
 	public Customer(int customerID){
-		arrivalTime = r.nextInt(59);
+		arrivalTime = r.nextInt(3540);
 		this.customerID = customerID;
+		seatNum = -1;
 	}
 	
 	public int getArrivalTime(){
@@ -19,6 +38,10 @@ public class Customer implements Comparable<Customer>{
 		this.seatNum = seatNum;
 	}
 	
+	public boolean isSigned(){
+		if(seatNum== -1)  return false;
+		else return true;
+	}
 	public int getSeatNum(){
 		return this.seatNum;
 	}
