@@ -5,7 +5,8 @@ public class Simulation {
 	public static void main(String[] args) {
 
 		//number of customers per seller per hour
-		int N = 10; //change to command line argument later?
+		int N = 10;
+		if (args.length > 0) N = Integer.parseInt(args[0]);
 
 		final Object lock = new Object();
 
