@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 
 public class FreePageList extends LinkedList<MemoryFrame>{
-	private int freeSpace;
+	private volatile int freeSpace;
 		
 	public FreePageList(int free){
 		
@@ -24,6 +24,7 @@ public class FreePageList extends LinkedList<MemoryFrame>{
 	//clean up the finished frames
 	public void clean(int index){
 		this.get(index).setFrame(".", index);
+		this.freeSpace++;
 	}
 	
 	
@@ -32,10 +33,14 @@ public class FreePageList extends LinkedList<MemoryFrame>{
 		return (this.freeSpace >= 4);
 	}
 	
+	public int getFreeSpace(){
+		return this.freeSpace;
+	}
+	
 	
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
-		for(int i = 0; i < this.freeSpace; i++){
+		for(int i = 0; i < App.MEMORY; i++){
 			builder.append(this.get(i).getPName());
 		}
 		/*

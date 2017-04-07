@@ -22,6 +22,8 @@ public class MemoryFrame {
 		this.index = index;
 		
 	}
+	
+	
 
 	public boolean isEmp(){
 		return this.pname.equals(".");

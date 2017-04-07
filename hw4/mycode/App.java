@@ -12,40 +12,53 @@ public class App {
 	private static int i = 1;
 	private static final int MAX = 150;
 	private static final int SEC = 60;
-	private static final int MEMORY = 100;
+	public static final int MEMORY = 100;
+	
+	private static final int arr[] = {5,11,17,31};
 	
 	private static AtomicInteger sec = new AtomicInteger(0);
-	private volatile static int flagTA = 0; //terminate after 60sec
+	public volatile static int flagTA = 0; //terminate after 60sec
 	public volatile static int okToPop = 0; //0 - not ok to pop, 1 - ok 
+	private volatile static FreePageList freePageL;
 	
-	private int prompt;
+	private Object lock;
+	
+	
+	public static int prompt;	//dont think volatile is necessary
 
 	public App(){
-		
+		lock = new Object();
 		DiskPageList disk = new DiskPageList();
-		LinkedList<JobProcess> jobQ = disk.expand(generateASumulatedQueue());
+		LinkedList<JobProcess> jobQ = generateASumulatedQueue();
+		
+		freePageL = new FreePageList(MEMORY);
 		
 		System.out.println("FIFO-1 LRU-2 LFU-3 MFU-4 Random-5");
 		Scanner prompter = new Scanner(System.in);
 		if(prompter.hasNextInt())
 			prompt = prompter.nextInt();
-		else
+		else{
+			prompter.close();
 			return;
 		
-		if(prompt > 5 || prompt < 1)
+		}
+		if(prompt > 5 || prompt < 1){
+			prompter.close();
 			return;
+			
+		}
+		
+	
 		
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask(){
-
 			@Override
 			public void run() {
 				// no need for synchronization since 
 				// only one thread can access the data.
-			
-				if(sec.incrementAndGet() == 10)
+				if(sec.incrementAndGet() == SEC)
 					flagTA = 1;
-				System.out.println(sec);
+				//System.out.println(se);
 
 			}
 			
@@ -53,11 +66,22 @@ public class App {
 		
 		while(flagTA != 1){
 			// main job starts here
-			
-			
+			if(okToPop == 0){
+				okToPop = -1;
+				if(jobQ.peek().getArr() <= sec.get()){
+					WorkerT workers = new WorkerT(jobQ.peek(), freePageL, lock, sec);
+					Thread t = new Thread(workers);
+					t.start();
+				}
+			}
+			if(okToPop == 1){
+				jobQ.pop();
+				okToPop = 0;
+			}
 			
 			
 		}
+		
 		
 		timer.cancel();
 		/*
@@ -68,8 +92,8 @@ public class App {
 		*/
 		
 		
-		FreePageList freePage = new FreePageList(MEMORY);
-		System.out.println(freePage);
+		
+		//System.out.println(freePageL);
 		
 	}
 	/*
@@ -94,7 +118,6 @@ public class App {
 	
 	private static JobProcess generateProcess(){
 		Random r = new Random(); 
-		int arr[] = {5,11,17,31};
 		
 		int time = r.nextInt(5) + 1;
 		
