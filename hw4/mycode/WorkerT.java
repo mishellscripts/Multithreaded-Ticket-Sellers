@@ -8,7 +8,7 @@ public class WorkerT implements Runnable{
 	private JobProcess jobProcess;
 	private FreePageList freePageL;
 	private DiskPageList diskPageL;
-	private Object mutex;
+	private Object mutex, lkalgor;
 	private AtomicInteger time;
 	private int duration;
 	private int jobSize;
@@ -18,11 +18,14 @@ public class WorkerT implements Runnable{
 	
 	private static Random r = new Random();
 	private static int[] deltaI = {-1,0,1}; //for locality of reference
+	private boolean pageInRef = false;
 	
-	public WorkerT(JobProcess jb, FreePageList flist, Object lock, AtomicInteger num){
+
+	public WorkerT(JobProcess jb, FreePageList flist, Object lock, Object lk,AtomicInteger num){
 		this.jobProcess = jb;
 		this.duration = jb.getSer() * 1000;
 		this.mutex = lock;
+		this.lkalgor = lk;
 		this.freePageL = flist;
 		this.time = num;
 		this.jobSize = jb.getSize();
@@ -30,7 +33,7 @@ public class WorkerT implements Runnable{
 	
 	@Override
 	public void run() {
-		while(time.get() <= 60  && App.flagTA == 0){
+		while(time.get() < 60  && App.flagTA == 0){
 			
 			//when it is finished
 			if(duration <= 0){
@@ -42,6 +45,7 @@ public class WorkerT implements Runnable{
 				}
 				
 				removeTheContentFromM();
+				writeRecord("Exit");
 
 				break;
 				
@@ -76,6 +80,13 @@ public class WorkerT implements Runnable{
 			//this is for the start of the execution
 			synchronized (this.mutex) {
 				if(this.freePageL.hasenoughSpace()){
+					
+					pageInRef = true;
+					
+					appPicker(5);
+					
+					writeRecord("Enter");
+					
 					this.freePageL.doAt(this.jobProcess, 0);
 					this.jobProcess.addFrame(new MemoryFrame(jobProcess.getName(), 0));
 					cIndex--;
@@ -97,7 +108,9 @@ public class WorkerT implements Runnable{
 						
 					}
 					this.freePageL.doAt(this.jobProcess, nextIndex);
-					this.jobProcess.addFrame(this.freePageL.get(nextIndex)); //not sure 
+					this.jobProcess.addFrame(this.freePageL.get(nextIndex)); 
+					
+					App.miss++;
 
 					doSomething(nextIndex);
 					
@@ -112,6 +125,7 @@ public class WorkerT implements Runnable{
 			synchronized(this.mutex){
 				
 				if(this.freePageL.getFreeSpace() > 0){
+					pageInRef = true;
 					while(!this.freePageL.get(nextIndex).isEmp()){ 
 						nextIndex = nextIndex + GenerateLoR(this.jobProcess.getFrames().get(cIndex).getIndex());
 
@@ -125,32 +139,30 @@ public class WorkerT implements Runnable{
 					
 					this.freePageL.doAt(this.jobProcess, nextIndex);
 					if(this.jobProcess.getFrames().size() < jobSize+1){
-						this.jobProcess.addFrame(this.freePageL.get(nextIndex)); //this is the problem. <-----
+						this.jobProcess.addFrame(this.freePageL.get(nextIndex)); 
+						
 						//System.out.println("ADD");
 					}else{
 						this.jobProcess.getFrames().set(cIndex, this.freePageL.get(nextIndex));
 						//System.out.println("SET");
 					}
+					App.miss++;
 					doSomething(nextIndex);	
 					
 					 
 				}else{
 					// swapping algorithm
 					//doesnt need nextIndex but cindex for sure
-					int indexForSwap = -1;
 					
-					// no need to synchronize this
-					if(App.prompt == 5){
-						//random pick
-						indexForSwap = r.nextInt(App.MEMORY);
-					}
+					appPicker(5);
 					
 					synchronized(this.mutex){
-						this.freePageL.doAt(this.jobProcess, indexForSwap);
-						this.jobProcess.getFrames().set(cIndex ,this.freePageL.get(indexForSwap));
+						pageInRef = true;
+						this.freePageL.doAt(this.jobProcess, App.pick);
+						this.jobProcess.getFrames().set(cIndex ,this.freePageL.get(App.pick));
 						
-
-						doSomething(indexForSwap);
+						App.miss++;
+						doSomething(App.pick);
 					}
 				}
 				
@@ -169,7 +181,9 @@ public class WorkerT implements Runnable{
 			if(!this.jobProcess.getFrames().get(cIndex).getPName().equals(this.jobProcess.getName())){
 				writeToMemory();
 			}else{
-				doSomething();
+				pageInRef = false;
+				App.hit.incrementAndGet();
+				doSomething(this.jobProcess.getFrames().get(cIndex).getIndex());
 			}				
 			
 			
@@ -197,9 +211,19 @@ public class WorkerT implements Runnable{
 	private void writeRecord(int pageReferenced){
 		System.out.println("---------Time: " + time.get() + "--------------------------");
 		//System.out.println("Process: " + this.jobProcess.getName() + " index: " + cIndex + " jB size: " + this.jobProcess.getFrames().size()+ " " + this.jobSize + " page refer: " + pageReferenced);
-		System.out.println("Process: " + this.jobProcess.getName()  +  " page refer: " + pageReferenced);
+		System.out.println("Process: " + this.jobProcess.getName()  +  " page refer: " + pageReferenced + " If page in Ref:" + pageInRef);
 		//System.out.println("Is page in memory: ");
-		System.out.println(this.freePageL);
+		System.out.println("Process that will be evicted if needed: " + App.pick);
+	//	System.out.println(this.freePageL);
+		
+	}
+	
+	private void writeRecord(String ee){
+		System.out.println("\n---------Time: " + time.get() + "--------------------------");
+		System.out.println("Process: " + this.jobProcess.getName() + " Enter/exit: " + ee);
+		System.out.println("Size: " + this.jobSize + " Duration: " + this.jobProcess.getSer());
+		System.out.println(freePageL);
+		System.out.println();
 		
 	}
 	
@@ -223,25 +247,19 @@ public class WorkerT implements Runnable{
 		}
 	}
 	
-	public void doSomething(){
-		try {
+	private void appPicker(int i){
+		if(i == 1){
 			
-			if(cIndex == jobSize)
-				this.cIndex = 1;	//circle back to 1
-			else
-				this.cIndex++;
+		}else if(i == 2){
 			
+		}else if(i == 3){
 			
-			duration = duration - 100;
-			Thread.sleep(100);
+		}else if(i == 4){
 			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}else if(i == 5){
+			App.pick = r.nextInt(App.MEMORY-1)+1;
 		}
 	}
-	
-	
 	
 	private boolean withinBound(int index){
 		if(index <= 99 && index >= 1 ){

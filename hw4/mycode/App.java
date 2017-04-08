@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -21,13 +24,23 @@ public class App {
 	public volatile static int okToPop = 0; //0 - not ok to pop, 1 - ok 
 	private volatile static FreePageList freePageL;
 	
-	private Object lock;
+	public static AtomicInteger hit = new AtomicInteger(0);
+	public volatile static int miss;
+	
+	public static ArrayList<Integer> algorithmList = new ArrayList<>(Collections.nCopies(100, SEC)); //construct an arrayList of all 60 
+	
+	public volatile static int pick = -1;
+	
+	
+	private Object lock, lockalgor;
 	
 	
 	public static int prompt;	//dont think volatile is necessary
 
 	public App(){
+		
 		lock = new Object();
+		lockalgor = new Object();
 		DiskPageList disk = new DiskPageList();
 		LinkedList<JobProcess> jobQ = generateASumulatedQueue();
 		
@@ -56,8 +69,12 @@ public class App {
 			public void run() {
 				// no need for synchronization since 
 				// only one thread can access the data.
-				if(sec.incrementAndGet() == SEC)
+				if(sec.incrementAndGet() == SEC-1){
 					flagTA = 1;
+					timer.purge();
+
+					timer.cancel();
+				}
 				//System.out.println(se);
 
 			}
@@ -69,7 +86,7 @@ public class App {
 			if(okToPop == 0){
 				okToPop = -1;
 				if(jobQ.peek().getArr() <= sec.get()){
-					WorkerT workers = new WorkerT(jobQ.peek(), freePageL, lock, sec);
+					WorkerT workers = new WorkerT(jobQ.peek(), freePageL, lock, lockalgor,sec);
 					Thread t = new Thread(workers);
 					t.start();
 				}
@@ -83,18 +100,19 @@ public class App {
 		}
 		
 		
-		timer.cancel();
 		/*
 		for(int i = 0; i < jobQ.size(); i++){
 			System.out.println(jobQ.get(i).getDiskIndex() + "   " 
 						+ jobQ.get(i).getSize());
 		}
 		*/
-		
-		
-		
-		//System.out.println(freePageL);
-		
+		try {
+			Thread.sleep(1000);
+			System.out.println("Hit/Miss ratio: " + App.hit + "/" + App.miss);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+				
 	}
 	/*
 	 * Generate a queue of jobs 
