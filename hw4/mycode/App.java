@@ -18,6 +18,7 @@ public class App {
 	public static final int MEMORY = 100;
 	
 	private static final int arr[] = {5,11,17,31};
+	//private static final int arr[] = {17,17,17,17};
 	
 	private static AtomicInteger sec = new AtomicInteger(0);
 	public volatile static int flagTA = 0; //terminate after 60sec
@@ -26,8 +27,9 @@ public class App {
 	
 	public static AtomicInteger hit = new AtomicInteger(0);
 	public volatile static int miss;
+	public static AtomicInteger evict = new AtomicInteger(0);
 	
-	public static ArrayList<Integer> algorithmList = new ArrayList<>(Collections.nCopies(100, SEC)); //construct an arrayList of all 60 
+	public static ArrayList<Integer> algorithmList; //construct an arrayList of all 60 
 	
 	public volatile static int pick = -1;
 	
@@ -59,6 +61,14 @@ public class App {
 			prompter.close();
 			return;
 			
+		}
+		
+		if(prompt <= 2){
+			algorithmList = new ArrayList<>(Collections.nCopies(99, SEC));
+		}else if(prompt == 3){
+			algorithmList = new ArrayList<>(Collections.nCopies(99, 9999));
+		}else if(prompt == 4){
+			algorithmList = new ArrayList<>(Collections.nCopies(99, 0));
 		}
 		
 	
@@ -109,6 +119,8 @@ public class App {
 		try {
 			Thread.sleep(1000);
 			System.out.println("Hit/Miss ratio: " + App.hit + "/" + App.miss);
+		//	System.out.println(App.evict.get());
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

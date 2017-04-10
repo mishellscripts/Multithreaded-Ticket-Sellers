@@ -25,6 +25,7 @@ public class FreePageList extends LinkedList<MemoryFrame>{
 	public void clean(int index){
 		this.get(index).setFrame(".", index);
 		this.freeSpace++;
+		
 	}
 	
 	

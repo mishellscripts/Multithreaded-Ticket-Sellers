@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
 public class JobProcess implements Comparable<JobProcess>{
 	
-	private volatile String name;
+	private String name;
 	private int size;
 	private int arrTime;
 	private int serTime;

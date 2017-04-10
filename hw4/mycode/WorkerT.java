@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,6 +46,7 @@ public class WorkerT implements Runnable{
 				}
 				
 				removeTheContentFromM();
+				appPicker(App.prompt);	//after removing it update the page to evict
 				writeRecord("Exit");
 
 				break;
@@ -55,6 +57,7 @@ public class WorkerT implements Runnable{
 			//put all disk memory to physical memory
 			while(jobSize + 1 > this.jobProcess.getFrames().size()){
 				writeToMemory();
+				appPicker(App.prompt);
 				if(App.flagTA == 1){
 					break;
 				}
@@ -69,7 +72,7 @@ public class WorkerT implements Runnable{
 			}
 			
 			readFromMemory();
-			
+			appPicker(App.prompt);	//after removing it update the page to evict
 		}
 	}
 	
@@ -81,25 +84,26 @@ public class WorkerT implements Runnable{
 			synchronized (this.mutex) {
 				if(this.freePageL.hasenoughSpace()){
 					
-					pageInRef = true;
+					pageInRef = false;
 					
-					appPicker(5);
+					appPicker(App.prompt);
 					
 					writeRecord("Enter");
 					
 					this.freePageL.doAt(this.jobProcess, 0);
 					this.jobProcess.addFrame(new MemoryFrame(jobProcess.getName(), 0));
 					cIndex--;
+					
+					this.freePageL.clean(0);
 
 					doSomething(0);
-					//clean up freePageList zeroth index
-					this.freePageL.clean(0);
 					// make sure that it wont get the zeroth index again in fpl or -1
 					while(!withinBound(nextIndex)){	
 						nextIndex = fixBound(GenerateLoR(0));
 					}
 					// loop until nextindex is not zero or the nextindex in the memory is empty
-					while(this.freePageL.get(nextIndex).getIndex() == 0 || !this.freePageL.get(nextIndex).isEmp()){ 
+					//while(this.freePageL.get(nextIndex).getIndex() == 0 || !this.freePageL.get(nextIndex).isEmp()){ 
+					while(nextIndex == 0 || !this.freePageL.get(nextIndex).isEmp()){
 						nextIndex = nextIndex + GenerateLoR(nextIndex);
 						
 						while(!withinBound(nextIndex)){	
@@ -109,9 +113,24 @@ public class WorkerT implements Runnable{
 					}
 					this.freePageL.doAt(this.jobProcess, nextIndex);
 					this.jobProcess.addFrame(this.freePageL.get(nextIndex)); 
+					// prompt == 1 or 2
+					if(App.prompt <= 2){
+						synchronized (this.lkalgor) {
+							
+							App.algorithmList.set(nextIndex - 1, this.time.get());
+						}
+				
+					}else if(App.prompt!= 5){
+						//prompt == 3 or 4
+						
+						synchronized (this.lkalgor) {
+							int k = 1;	//set to one since just adding it
+							App.algorithmList.set(nextIndex - 1, k);
+						}
+					}
 					
 					App.miss++;
-
+					
 					doSomething(nextIndex);
 					
 				}
@@ -120,13 +139,14 @@ public class WorkerT implements Runnable{
 		}else{		
 			
 			//get the job list current memoryframe index
-			nextIndex = fixBound(GenerateLoR(this.jobProcess.getFrames().get(cIndex).getIndex())); //should still be within locality of ref
-		
+
+			appPicker(App.prompt);
 			synchronized(this.mutex){
 				
-				if(this.freePageL.getFreeSpace() > 0){
-					pageInRef = true;
-					while(!this.freePageL.get(nextIndex).isEmp()){ 
+				if(this.freePageL.getFreeSpace() > 1){
+					nextIndex = fixBound(GenerateLoR(this.jobProcess.getFrames().get(cIndex).getIndex())); //should still be within locality of ref
+					pageInRef = false;
+					while(!this.freePageL.get(nextIndex).isEmp() || nextIndex == 0){ 
 						nextIndex = nextIndex + GenerateLoR(this.jobProcess.getFrames().get(cIndex).getIndex());
 
 						while(!withinBound(nextIndex)){	
@@ -146,6 +166,24 @@ public class WorkerT implements Runnable{
 						this.jobProcess.getFrames().set(cIndex, this.freePageL.get(nextIndex));
 						//System.out.println("SET");
 					}
+					
+					if(App.prompt <= 2){
+						synchronized (this.lkalgor) {
+							
+							App.algorithmList.set(nextIndex - 1, this.time.get());
+						}
+				
+						
+					}else if(App.prompt != 5){
+						//prompt == 3 or 4
+						
+						synchronized (this.lkalgor) {
+							int k = 1; 	//set to 1 since you are just adding it to the free page list
+									
+							App.algorithmList.set(nextIndex - 1, k);
+						}
+					}
+					
 					App.miss++;
 					doSomething(nextIndex);	
 					
@@ -154,16 +192,42 @@ public class WorkerT implements Runnable{
 					// swapping algorithm
 					//doesnt need nextIndex but cindex for sure
 					
-					appPicker(5);
 					
-					synchronized(this.mutex){
-						pageInRef = true;
-						this.freePageL.doAt(this.jobProcess, App.pick);
-						this.jobProcess.getFrames().set(cIndex ,this.freePageL.get(App.pick));
+					
+					appPicker(App.prompt);
+
+					App.evict.incrementAndGet();
+					pageInRef = false;
+					this.freePageL.clean(App.pick);
+					this.freePageL.doAt(this.jobProcess, App.pick);
+					if(this.jobProcess.getFrames().size() < jobSize+1){
+						this.jobProcess.addFrame(this.freePageL.get(App.pick)); 
 						
-						App.miss++;
-						doSomething(App.pick);
+						//System.out.println("ADD");
+					}else{
+						this.jobProcess.getFrames().set(cIndex, this.freePageL.get(App.pick));
+						//System.out.println("SET");
 					}
+					if(App.prompt <= 2){
+						synchronized (this.lkalgor) {
+							
+							App.algorithmList.set(App.pick - 1, this.time.get());
+						}
+				
+							
+					}else if(App.prompt != 5){
+							//prompt == 3 or 4
+							
+						synchronized (this.lkalgor) {
+							//reset the swapped frame to 1
+							int k = 1;
+							App.algorithmList.set(App.pick - 1, k);
+						}
+					}
+						
+					App.miss++;
+					doSomething(App.pick);
+					
 				}
 				
 			}
@@ -176,19 +240,40 @@ public class WorkerT implements Runnable{
 	// if not, call writeToMemory
 	public void readFromMemory(){
 		
+		//if frame is not in free page list then writetomemory else read it.
+		if(!this.jobProcess.getFrames().get(cIndex).getPName().equals(this.jobProcess.getName())){
 		
-		if(App.prompt == 5){
-			if(!this.jobProcess.getFrames().get(cIndex).getPName().equals(this.jobProcess.getName())){
-				writeToMemory();
-			}else{
-				pageInRef = false;
-				App.hit.incrementAndGet();
-				doSomething(this.jobProcess.getFrames().get(cIndex).getIndex());
-			}				
+			writeToMemory();
+			appPicker(App.prompt);	
+		}else{
+			
+			// FIFO does not matter here. FIFO only matters when it is first pushed into the freepagelist
+			if(App.prompt == 2){
+				synchronized (this.lkalgor) {
+					App.algorithmList.set(this.jobProcess.getFrames().get(cIndex).getIndex() - 1, this.time.get());
+				}
+				
+			}else if(App.prompt != 5){
+				//prompt == 3 or 4
+				
+				synchronized (this.lkalgor) {
+					int k = App.algorithmList.get(this.jobProcess.getFrames().get(cIndex).getIndex() - 1);
+					k++;
+					App.algorithmList.set(this.jobProcess.getFrames().get(cIndex).getIndex() - 1, k);
+				}
+			}
+			
+			
+			pageInRef = true;
+			App.hit.incrementAndGet();
+				
+			
+			doSomething(this.jobProcess.getFrames().get(cIndex).getIndex());
+		}	
 			
 			
 
-		}
+		
 	}
 	
 	// might reimplement this
@@ -202,10 +287,30 @@ public class WorkerT implements Runnable{
 				if(this.jobProcess.getFrames().get(i).getPName().equals(this.jobProcess.getName())){
 					indexForFrame = this.jobProcess.getFrames().get(i).getIndex();
 					this.freePageL.clean(indexForFrame);
-					//System.out.println("YOYOYOYOYOYOYOY");
+				
+					//setting the values back to initial states
+					if(App.prompt <= 2){
+						App.algorithmList.set(this.jobProcess.getFrames().get(cIndex).getIndex() - 1, 60);
+						
+					}else if(App.prompt == 3){
+						//prompt == 3 or 4
+						
+						synchronized (this.lkalgor) {
+							int k = 9999; //set to 9999 initial state when removed
+							App.algorithmList.set(this.jobProcess.getFrames().get(cIndex).getIndex() - 1, k);
+						}
+					}else if(App.prompt == 4){
+						//prompt == 3 or 4
+						
+						synchronized (this.lkalgor) {
+							int k = 0; //set to zero when removed
+							App.algorithmList.set(this.jobProcess.getFrames().get(cIndex).getIndex() - 1, k);
+						}
+					}
 				}
 			}
 		}
+		
 	}
 	
 	private void writeRecord(int pageReferenced){
@@ -214,6 +319,7 @@ public class WorkerT implements Runnable{
 		System.out.println("Process: " + this.jobProcess.getName()  +  " page refer: " + pageReferenced + " If page in Ref:" + pageInRef);
 		//System.out.println("Is page in memory: ");
 		System.out.println("Process that will be evicted if needed: " + App.pick);
+	//	System.out.println(freePageL.getFreeSpace());
 	//	System.out.println(this.freePageL);
 		
 	}
@@ -249,14 +355,27 @@ public class WorkerT implements Runnable{
 	
 	private void appPicker(int i){
 		if(i == 1){
-			
+			//FIFO use time to determine 
+			synchronized (this.lkalgor) {
+				App.pick = App.algorithmList.indexOf(Collections.min(App.algorithmList))+1;
+			}
 		}else if(i == 2){
-			
+			//LRU use time to determine
+			synchronized (this.lkalgor) {
+				App.pick = App.algorithmList.indexOf(Collections.min(App.algorithmList))+1;
+			}
 		}else if(i == 3){
-			
+			//LFU //use counter to determine
+			synchronized (this.lkalgor) {
+				App.pick = App.algorithmList.indexOf(Collections.min(App.algorithmList))+1;
+			}
 		}else if(i == 4){
-			
+			//MFU	/use counter to determine
+			synchronized (this.lkalgor) {
+				App.pick = App.algorithmList.indexOf(Collections.max(App.algorithmList))+1;
+			}
 		}else if(i == 5){
+			//random pick
 			App.pick = r.nextInt(App.MEMORY-1)+1;
 		}
 	}

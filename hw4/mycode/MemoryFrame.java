@@ -1,6 +1,6 @@
 
 public class MemoryFrame {
-	private String pname;
+	private volatile String pname;
 	private int index;
 	private static final int SIZE = 1; //MB
 		
